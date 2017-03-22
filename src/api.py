@@ -24,4 +24,5 @@ class API:
         return r.json()
 
 if __name__ == '__main__':
-    api = API('<email>', '<api token>')
+    api = API('yuyajeremyong@gmail.com', '6g6wDQF5sceQtEZeUKJWYx0o6Uer4vGg')
+    print api.get_posts()

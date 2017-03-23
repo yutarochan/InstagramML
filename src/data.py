@@ -68,8 +68,9 @@ def dataframe(filename):
 
 filename = '../data/dataset.json'
 
-# Test
-raw_data = parse_json(filename)
+if __name__ == '__main__':
+    # Test
+    raw_data = parse_json(filename)
 
-df = dataframe(filename)
-print(df.head())
+    df = dataframe(filename)
+    print(df.head())

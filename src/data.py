@@ -28,7 +28,7 @@ def dataframe(filename):
     for i in range(num_accounts):
         username = str(raw_data[i]['username'])
         id = int(raw_data[i]['id'])
-        posts = raw_data[0]['posts']
+        posts = raw_data[i]['posts']
         for j in range(len(posts)):
             # Add posts to updated
             df['likes'][x] = posts[j]['instagram']['likes']['count']

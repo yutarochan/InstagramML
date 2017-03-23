@@ -70,13 +70,6 @@ filename = '../data/dataset.json'
 
 # Test
 raw_data = parse_json(filename)
-# print(raw_data[0]['posts'][0]['instagram']['caption'])
 
-annotations = raw_data[0]['posts'][0]['annotations']
-print('labelAnnotations' in annotations)
-print(raw_data[0]['posts'][432]['annotations'].keys())
-print(annotations['labelAnnotations'])
-
-
-# df = dataframe(filename)
-# print(df.head())
+df = dataframe(filename)
+print(df.head())

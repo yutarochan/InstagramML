@@ -41,7 +41,8 @@ def dataframe(filename):
             df['video'][x] = posts[j]['instagram']['is_video']
             df['height'][x] = posts[j]['instagram']['dimensions']['height']
             df['width'][x] = posts[j]['instagram']['dimensions']['width']
-            df['caption'][x] = posts[j]['instagram']['caption']
+            if 'caption' in posts[j]['instagram']:
+		df['caption'][x] = posts[j]['instagram']['caption']
             annotations = posts[j]['annotations']
             # ** insert annotation code here... **
             # faceAnnotations

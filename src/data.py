@@ -17,7 +17,8 @@ from sklearn.model_selection import train_test_split
 
 # * * * GLOBAL VARIABLES * * *
 usernames = ['kissinfashion', 'instagood', 'beautifuldestinations', 'etdieucrea', 'josecabaco']
-thresholds = [0.095, 0.145, 0.105, 0.145, 0.185] # for scoring, same index as usernames
+# For scoring
+thresholds = {'kissinfashion': 0.095, 'instagood': 0.145, 'beautifuldestinations': 0.105, 'etdieucrea': 0.145, 'josecabaco': 0.185}
 filename = '../data/dataset.json'
 trainname = '../data/train.csv'
 testname = '../data/test.csv'
@@ -100,14 +101,12 @@ def get_user_data(df, username):
 def split_data(filename):
     # Get full dataframe
     df = dataframe(filename)
-    dfdict = {}
-    for user in usernames:
-        dfdict[user] = get_user_data(df, user)
+    users = {user: get_user_data(df, user) for user in usernames}
     seed = 3075 # Using this for reproducibility
     test_size = 0.20 # 29% of data
     train, test = {}, {}
-    for user in dfdict:
-        data = train_test_split(dfdict[user], test_size=test_size, random_state=seed)
+    for user in users:
+        data = train_test_split(users[user], test_size=test_size, random_state=seed)
         train[user] = data[0]
         test[user] = data[1]
     return train, test

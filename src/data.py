@@ -15,6 +15,14 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
+# * * * GLOBAL VARIABLES * * *
+usernames = ['kissinfashion', 'instagood', 'beautifuldestinations', 'etdieucrea', 'josecabaco']
+thresholds = [0.095, 0.145, 0.105, 0.145, 0.185] # for scoring, same index as usernames
+filename = '../data/dataset.json'
+trainname = '../data/train.csv'
+testname = '../data/test.csv'
+
+
 def parse_json(filename):
     json_file = open(filename, 'rb')
     return json.loads(json_file.readlines()[0])
@@ -79,29 +87,45 @@ def dataframe(filename):
     return df
 
 
-def split_data(filename):
-    df = dataframe(filename)
-    seed = 3075 # Using this for reproducibility
-    test_size = 0.20 # 29% of data
-    data = train_test_split(df, test_size=test_size, random_state=seed)
-    train = data[0]
-    test = data[1]
-    return train, test
-
-def make_csv(filename, trainname, testname):
+def get_user_data(df, username):
     """
-    Makes tab-deliminated data from the dataset. 
+    From the whole data, return the dataframe corresponding to one username.
+    :param df: Dataframe of all the data
+    :param username: username
     :return: 
     """
-#    columns = ['likes', 'username', 'id', 'date', 'instagram_id', 'thumbnail_src', 'display_src', 'video',
-#               'height', 'width', 'caption']
-    train, test = split_data(filename)
-    train.to_csv(path_or_buf=trainname, sep='\t', index=False, encoding='utf-8')
-    test.to_csv(path_or_buf=testname, sep='\t', index=False, encoding='utf-8')
+    return df.loc[df['username'] == username]
 
-filename = '../data/dataset.json'
-trainname = '../data/train.csv'
-testname = '../data/test.csv'
+
+def split_data(filename):
+    # Get full dataframe
+    df = dataframe(filename)
+    dfdict = {}
+    for user in usernames:
+        dfdict[user] = get_user_data(df, user)
+    seed = 3075 # Using this for reproducibility
+    test_size = 0.20 # 29% of data
+    train, test = {}, {}
+    for user in dfdict:
+        data = train_test_split(dfdict[user], test_size=test_size, random_state=seed)
+        train[user] = data[0]
+        test[user] = data[1]
+    return train, test
+
+
+def make_csv(filename):
+    """
+    Makes tab-deliminated data from the dataset. 
+    Returns test and train datasets for each user.
+    :return: 
+    """
+    usernames = ['kissinfashion', 'instagood', 'beautifuldestinations', 'etdieucrea', 'josecabaco']
+    train, test = split_data(filename)
+    for user in usernames:
+        trainname = '../data/' + 'train_' + user + '.csv'
+        testname = '../data/' + 'test_' + user + '.csv'
+        train[user].to_csv(path_or_buf=trainname, sep='\t', index=False, encoding='utf-8')
+        test[user].to_csv(path_or_buf=testname, sep='\t', index=False, encoding='utf-8')
 
 if __name__ == '__main__':
     # Test
@@ -111,6 +135,8 @@ if __name__ == '__main__':
 #    print(train.head())
 #    print(test.head())
 #    print(len(train), len(test))
-    make_csv(filename, trainname, testname)
-    train = pd.read_csv(trainname, sep='\t', encoding='utf-8')
-    print(train.head())
+#    df = dataframe(filename)
+#    df.to_csv(path_or_buf='../data/alldata.csv', sep='\t', index=False, encoding='utf-8')
+    make_csv(filename)
+
+

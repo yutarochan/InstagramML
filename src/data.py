@@ -1,17 +1,29 @@
 '''
 InstagramML - Data Parser & Preprocessing
 Author: Yuya Jeremy Ong (yuyajeremyong@gmail.com)
+
+Functions
+---------
+parse_json
+download_images
+dataframe
+split_data(filename)
+    Take the data directly from the filename and return a split test and training dataset
 '''
 import json
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import train_test_split
 
 def parse_json(filename):
     json_file = open(filename, 'rb')
     return json.loads(json_file.readlines()[0])
 
+
 def download_images(target_folder, json):
-    parse_json
+#    parse_json
+    pass
+
 
 def dataframe(filename):
     raw_data = parse_json(filename)
@@ -42,7 +54,7 @@ def dataframe(filename):
             df['height'][x] = posts[j]['instagram']['dimensions']['height']
             df['width'][x] = posts[j]['instagram']['dimensions']['width']
             if 'caption' in posts[j]['instagram']:
-		df['caption'][x] = posts[j]['instagram']['caption']
+                df['caption'][x] = posts[j]['instagram']['caption']
             annotations = posts[j]['annotations']
             # ** insert annotation code here... **
             # faceAnnotations
@@ -67,11 +79,22 @@ def dataframe(filename):
     return df
 
 
+def split_data(filename):
+    df = dataframe(filename)
+    seed = 3075 # Using this for reproducibility
+    test_size = 0.20 # 29% of data
+    data = train_test_split(df, test_size=test_size, random_state=seed)
+    train = data[0]
+    test = data[1]
+    return train, test
+
 filename = '../data/dataset.json'
 
 if __name__ == '__main__':
     # Test
-    raw_data = parse_json(filename)
+#    raw_data = parse_json(filename)
 
-    df = dataframe(filename)
-    print(df.head())
+    train, test = split_data(filename)
+    print(train.head())
+    print(test.head())
+    print(len(train), len(test))

@@ -52,18 +52,18 @@ def dataframe(filename):
         posts = raw_data[i]['posts']
         for j in range(len(posts)):
             # Add posts to updated
-            df['likes'][x] = posts[j]['instagram']['likes']['count']
-            df['username'][x] = username
-            df['id'][x] = id
-            df['date'][x] = posts[j]['instagram']['date']
-            df['instagram_id'][x] = posts[j]['instagram']['id']
-            df['thumbnail_src'][x] = posts[j]['instagram']['thumbnail_src']
-            df['display_src'][x] = posts[j]['instagram']['display_src']
-            df['video'][x] = posts[j]['instagram']['is_video']
-            df['height'][x] = posts[j]['instagram']['dimensions']['height']
-            df['width'][x] = posts[j]['instagram']['dimensions']['width']
+            df.set_value(x, 'likes', posts[j]['instagram']['likes']['count'])
+            df.set_value(x,'username', username)
+            df.set_value(x, 'id', id)
+            df.set_value(x, 'date', posts[j]['instagram']['date'])
+            df.set_value(x, 'instagram_id', posts[j]['instagram']['id'])
+            df.set_value(x, 'thumbnail_src', posts[j]['instagram']['thumbnail_src'])
+            df.set_value(x, 'display_src', posts[j]['instagram']['display_src'])
+            df.set_value(x, 'video', posts[j]['instagram']['is_video'])
+            df.set_value(x, 'height', posts[j]['instagram']['dimensions']['height'])
+            df.set_value(x, 'width', posts[j]['instagram']['dimensions']['width'])
             if 'caption' in posts[j]['instagram']:
-                df['caption'][x] = posts[j]['instagram']['caption']
+                df.set_value(x, 'caption', posts[j]['instagram']['caption'])
             annotations = posts[j]['annotations']
             # ** insert annotation code here... **
             # faceAnnotations

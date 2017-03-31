@@ -88,13 +88,29 @@ def split_data(filename):
     test = data[1]
     return train, test
 
+def make_csv(filename, trainname, testname):
+    """
+    Makes tab-deliminated data from the dataset. 
+    :return: 
+    """
+#    columns = ['likes', 'username', 'id', 'date', 'instagram_id', 'thumbnail_src', 'display_src', 'video',
+#               'height', 'width', 'caption']
+    train, test = split_data(filename)
+    train.to_csv(path_or_buf=trainname, sep='\t', index=False, encoding='utf-8')
+    test.to_csv(path_or_buf=testname, sep='\t', index=False, encoding='utf-8')
+
 filename = '../data/dataset.json'
+trainname = '../data/train.csv'
+testname = '../data/test.csv'
 
 if __name__ == '__main__':
     # Test
 #    raw_data = parse_json(filename)
 
-    train, test = split_data(filename)
+#    train, test = split_data(filename)
+#    print(train.head())
+#    print(test.head())
+#    print(len(train), len(test))
+    make_csv(filename, trainname, testname)
+    train = pd.read_csv(trainname, sep='\t', encoding='utf-8')
     print(train.head())
-    print(test.head())
-    print(len(train), len(test))

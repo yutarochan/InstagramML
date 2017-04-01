@@ -9,10 +9,21 @@
 """
 
 import numpy as np
+import pandas as pd
 from sklearn.metrics import make_scorer
 
 def get_points(y, y_pred, threshold=0.10, **kwargs):
-    error = np.abs((y_pred - y)/y)
+    # to prevent bug in math
+    if isinstance(y, pd.Series):
+        y = y.values
+    elif not isinstance(y, np.ndarray):
+        y = np.ndarray(y)
+    if isinstance(y_pred, pd.Series):
+        y_pred = y_pred.values
+    elif not isinstance(y_pred, np.ndarray):
+        y_pred = np.ndarray(y_pred)
+    # actual calculation
+    error = np.abs((y - y_pred)/y)
     points = np.zeros_like(y, dtype=int)
     points[error < threshold] = 1
     return sum(points)
@@ -31,8 +42,8 @@ def instagram_scorer(threshold):
 
 
 if __name__ == '__main__':
-    y_pred = np.random.random(100)
-    y = np.random.random(100)
+    y_pred = np.ones(100) + np.random.random(100) * 0.20
+    y = np.ones(100)
     score = get_points(y, y_pred, threshold=0.10)
     scorer = instagram_scorer(0.1)
     print(score)

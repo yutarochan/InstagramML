@@ -22,7 +22,8 @@ thresholds = {'kissinfashion': 0.095, 'instagood': 0.145, 'beautifuldestinations
 filename = '../data/dataset.json'
 trainname = '../data/train.csv'
 testname = '../data/test.csv'
-
+split_seed = 3075 # Seed for training/test splitting
+test_size = 0.20 # 20% of data is made test data
 
 def parse_json(filename):
     json_file = open(filename, 'rb')
@@ -102,11 +103,11 @@ def split_data(filename):
     # Get full dataframe
     df = dataframe(filename)
     users = {user: get_user_data(df, user) for user in usernames}
-    seed = 3075 # Using this for reproducibility
-    test_size = 0.20 # 29% of data
+    seed = split_seed # Using this for reproducibility
+    tsize = test_size
     train, test = {}, {}
     for user in users:
-        data = train_test_split(users[user], test_size=test_size, random_state=seed)
+        data = train_test_split(users[user], test_size=tsize, random_state=seed)
         train[user] = data[0]
         test[user] = data[1]
     return train, test

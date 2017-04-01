@@ -14,8 +14,8 @@ class API:
         r = req.get(self.BASE_URL+'live')
         return r.json()
 
-    def submit(self, success, likes):
-        payload = {'success': success, 'likes': likes}
+    def submit(self, post, likes):
+        payload = {'post': post, 'likes': likes}
         r = req.post(self.BASE_URL+'submissions', json=payload)
         return r.json()
 

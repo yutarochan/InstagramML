@@ -20,13 +20,15 @@ def get_annotations():
     # indices for dataframe
     print "Preparing Label DataFrame..."
     index = [x for x in range(size)]
-    columns = ['likes', 'username', 'display_src']
+    columns = ['likes', 'username', 'display_src', 'hour', 'day']
     tagdf = pd.DataFrame(index=index, columns=columns)
     x = 0
 
     tagdf['likes'] = df['likes']
     tagdf['username'] = df['username']
     tagdf['display_src'] = df['display_src']
+    tagdf['hour'] = pd.to_datetime(df['date'], unit='s').dt.hour
+    tagdf['day'] = pd.to_datetime(df['date'], unit='s').dt.weekday
     print "Starting Iteration"
     for i in range(num_accounts):
         posts = raw_data[i]['posts']

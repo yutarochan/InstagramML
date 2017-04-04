@@ -24,6 +24,8 @@ def get_features(filename):
         counts[user].drop('likes', inplace=True)
         counts[user].drop('username', inplace=True)
         counts[user].drop('display_src', inplace=True)
+        counts[user].drop('hour', inplace=True)
+        counts[user].drop('day', inplace=True)
         # remove features with counts of less than n
         n = 10
         to_remove = counts[user][counts[user] <= n].index
@@ -33,6 +35,8 @@ def get_features(filename):
         counts[user].drop('likes', inplace=True)
         counts[user].drop('username', inplace=True)
         counts[user].drop('display_src', inplace=True)
+        counts[user].drop('hour', inplace=True)
+        counts[user].drop('day', inplace=True)
 #        print counts[user].head()
 #        print user, (len(labels[user].columns) - 3)
         path = '../data/labels/' + user + '.csv'
@@ -111,5 +115,6 @@ def make_csv():
 # alpha = 0.312, x_m = 0.753
 
 if __name__ == "__main__":
+    labels, counts = get_features(labelfilename)
     make_csv()
 

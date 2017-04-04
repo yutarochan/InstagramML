@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 import shelve
 import requests as req
+from datetime import datetime
+
 # From Instagram ML
 from api import API
 from data import usernames, thresholds
@@ -62,7 +64,9 @@ class LabelModel(API):
         labels = {}
         columns = {}
         for user in usernames:
-            user_columns = [u'likes', u'username', u'instagram_id'] + column_shelf[user]
+            first_columns = [u'likes', u'username', u'instagram_id']
+            time_columns = [u'hour_0005', u'hour_0611', u'hour_1217', u'hour_1823', u'monday', u'tuesday', u'wednesday', u'thursday', u'friday', u'saturday', u'sunday']
+            user_columns = first_columns + time_columns + column_shelf[user]
             labels[user] = pd.DataFrame(index=[0], columns=user_columns)
             # Put in memory and make str
             columns[user] = [x.encode('utf-8') for x in column_shelf[user]]
@@ -73,12 +77,28 @@ class LabelModel(API):
             posts = raw_data[i]['posts']
             if posts:
                 for j in range(len(posts)):
-                    # Set username
-                    labels[user].set_value(x, 'username', user)
                     # Set likes
                     labels[user].set_value(x, 'likes', posts[j]['instagram']['likes']['count'])
+                    # Set username
+                    labels[user].set_value(x, 'username', user)
                     # Set id
                     labels[user].set_value(x, 'instagram_id', posts[j]['instagram']['id'])
+                    # get date
+                    date = posts[j]['instagram']['date']
+                    (hour_0005, hour_0611, hour_1217, hour_1823,
+                     monday, tuesday, wednesday, thursday, friday, saturday, sunday) = self.make_time(date)
+                    # set dates
+                    labels[user].set_value(x, 'hour_0005', hour_0005)
+                    labels[user].set_value(x, 'hour_0611', hour_0611)
+                    labels[user].set_value(x, 'hour_1217', hour_1217)
+                    labels[user].set_value(x, 'hour_1823', hour_1823)
+                    labels[user].set_value(x, 'monday', monday)
+                    labels[user].set_value(x, 'tuesday', tuesday)
+                    labels[user].set_value(x, 'wednesday', wednesday)
+                    labels[user].set_value(x, 'thursday', thursday)
+                    labels[user].set_value(x, 'friday', friday)
+                    labels[user].set_value(x, 'saturday', saturday)
+                    labels[user].set_value(x, 'sunday', sunday)
                     annotations = posts[j]['annotations']
                     if 'labelAnnotations' in annotations:
                         # Sets each label as a new feature with its  value the label's score
@@ -108,6 +128,32 @@ class LabelModel(API):
                 # This shouldn't occur (user should match username but just in case
                 verify[user] = False
         return X, verify, posts
+
+
+    def make_time(self, date):
+        """
+        From a Linux time, convert it to a set of binary variables
+        containing the hour (within a range of 6 hours) or the
+        day of the week.
+        :param date: 
+        :return: 
+        """
+        # Make hour and day
+        hour = datetime.fromtimestamp(date).hour
+        day = datetime.fromtimestamp(date).day
+        # convert this to hour stuff
+        hour_0005 = 1 if (hour <= 5) else 0
+        hour_0611 = 1 if ((hour >= 6) and (hour <= 11)) else 0
+        hour_1217 = 1 if ((hour >= 12) and (hour <= 17)) else 0
+        hour_1823 = 1 if ((hour >= 18) and (hour <= 23)) else 0
+        monday = 1 if day == 0 else 0
+        tuesday = 1 if day == 1 else 0
+        wednesday = 1 if day == 2 else 0
+        thursday = 1 if day == 3 else 0
+        friday = 1 if day == 4 else 0
+        saturday = 1 if day == 5 else 0
+        sunday = 1 if day == 6 else 0
+        return hour_0005, hour_0611, hour_1217, hour_1823, monday, tuesday, wednesday, thursday, friday, saturday, sunday
 
 
     def make_predictions(self, X, verify):

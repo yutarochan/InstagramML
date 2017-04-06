@@ -254,7 +254,7 @@ class LabelModel(API):
                 print requests
 
 
-def run_all_the_things(model):
+def run_all_the_things(model, minutes=5):
     """
     Infinite loop to run the server.
     :param model: 
@@ -262,7 +262,7 @@ def run_all_the_things(model):
     """
     while True:
         model.main(get=True, submit=True)
-        dt = 60 * 5 # 5 minutes
+        dt = 60 * minutes # 5 minutes
         time.sleep(dt)
 
 
@@ -270,5 +270,4 @@ if __name__ == '__main__':
     username = 'yuyajeremyong@gmail.com'
     key = '6g6wDQF5sceQtEZeUKJWYx0o6Uer4vGg'
     model = LabelModel(username, key)
-    model.main(get=True, submit=True)
-#    run_all_the_things(model)
+    run_all_the_things(model, minutes=5)

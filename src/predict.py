@@ -45,6 +45,7 @@ class LabelModel(API):
             file = API.get_posts(self)
         else:
             file = raw_file
+        print file
         raw_data = file['accounts']
         success = file['success']
         return raw_data, success
@@ -261,9 +262,13 @@ def run_all_the_things(model, minutes=5):
     :return: 
     """
     while True:
-        model.main(get=True, submit=True)
-        dt = 60 * minutes # 5 minutes
-        time.sleep(dt)
+        try:
+            model.main(get=True, submit=True)
+            dt = 60 * minutes # 5 minutes
+            time.sleep(dt)
+        except Exception as err:
+            print(err)
+
 
 
 if __name__ == '__main__':

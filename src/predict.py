@@ -9,6 +9,7 @@ import pandas as pd
 import shelve
 import requests as req
 from datetime import datetime
+import time
 
 # From Instagram ML
 from api import API
@@ -253,8 +254,21 @@ class LabelModel(API):
                 print requests
 
 
+def run_all_the_things(model):
+    """
+    Infinite loop to run the server.
+    :param model: 
+    :return: 
+    """
+    while True:
+        model.main(get=True, submit=True)
+        dt = 60 * 5 # 5 minutes
+        time.sleep(dt)
+
+
 if __name__ == '__main__':
     username = 'yuyajeremyong@gmail.com'
     key = '6g6wDQF5sceQtEZeUKJWYx0o6Uer4vGg'
     model = LabelModel(username, key)
-    model.main(get=False, submit=False)
+    model.main(get=True, submit=True)
+#    run_all_the_things(model)

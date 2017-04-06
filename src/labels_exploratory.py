@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from data import usernames, thresholds
+from data import usernames, thresholdsfor user in usernames:
+    sns.distplot(labels[user]['likes'])
 
 # labelname = '../data/labels/' + user + '.csv'
 # trainname = '../data/labels/' + 'train_' + user + '.csv'
@@ -15,5 +16,3 @@ train = {user: pd.read_csv(('../data/labels/' + 'train_' + user + '.csv'), sep='
 test = {user: pd.read_csv(('../data/labels/' + 'test_' + user + '.csv'), sep='\t', encoding='utf-8')
               for user in usernames}
 
-for user in usernames:
-    sns.distplot(labels[user]['likes'])
